@@ -9,7 +9,8 @@ class main_controller extends CI_Controller {
     }
 
 	public function index(){
-		$this->load->view('view_home');
+		//$this->load->view('view_home');
+        $this->testGetData();
     }
 
     // public function viewInput(){
@@ -24,11 +25,42 @@ class main_controller extends CI_Controller {
     //     $this->index();
     // }
 
-    public function viewTampilData()
+    public function testGetData()
     {
         $data = $this->main_model->selectAllData();
+        $this->load->library('ftp');
+        $config['hostname'] = '192.168.91.128';
+        $config['username'] = 'root';
+        $config['password'] = '123160035';
+        $config['debug']    = TRUE;
+
+        $this->ftp->connect($config);
+
+        foreach ($data as $temp) {
+            $this->ftp->download('/mnt/assets/'.$temp['file_name'],'C:/xampp/htdocs/spotify_tcc/assets/'.$temp['file_name'],'auto');
+        }
+
+        //$test = $this->ftp->mirror('C:/xampp/htdocs/spotify_tcc/assets/','/mnt/assets/');
+        // $test = $this->ftp->list_files('/mnt/assets/');
+        
+        // if ($test) {
+        //     echo "fefef";
+        // }else{
+        //     echo 'sad';
+        // }
+
         $this->load->view("view_home",array(
             'data' => $data
         ));
+
+        $this->ftp->close();
     }
+
+    // public function viewTampilData()
+    // {
+    //     $data = $this->main_model->selectAllData();
+    //     $this->load->view("view_home",array(
+    //         'data' => $data
+    //     ));
+    // }
 }

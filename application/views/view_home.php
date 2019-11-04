@@ -11,12 +11,12 @@
 <body>
     <div class="container">
         <center>
-            <a href="<?php echo base_url("index.php/main_controller/viewTampilData"); ?>"><button>Output</button></a>
+            <h1>Winamp Onlen</h1>
         </center>
     </div>
     <div>
         <center>
-            <table width="100%">
+            <table width="70%">
                 <tr>
                     <th>No</th>
                     <th>Judul</th>
