@@ -9,5 +9,9 @@
         	$data = $this->db->get('list_music');
         	return $data->result_array();
         }
+
+        public function insertData($data){
+            $this->db->insert('list_music',$data);
+        }
     }
 ?>
