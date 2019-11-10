@@ -18,7 +18,7 @@
         <center>
             <table>
                 <tr>
-                    <td width="240 px"><img src="http://fit.upnyk.ac.id/assets/images/fileupload/profil/03052016051046.jpg" height="100%" width="100%"></td>
+                    <td width="240 px"><img src="<?php echo base_url('assets/cover_winamp.png'); ?>" height="100%" width="100%"></td>
                     <td>
                         <form method="POST" action="<?php echo base_url('index.php/main_controller/testUpData'); ?>" enctype="multipart/form-data">
                             <table border="1">
@@ -32,7 +32,7 @@
                                 </tr>
                                 <tr>
                                     <td>Song</td>
-                                    <td><input type="file" name="song"></td>
+                                    <td><input type="file" name="song" accept=".mp3"></td>
                                 </tr>
                                 <tr>
                                     <td></td>

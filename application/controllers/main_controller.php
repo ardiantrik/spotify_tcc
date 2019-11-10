@@ -28,8 +28,8 @@ class main_controller extends CI_Controller {
     public function initUpload()
     {
         $config['upload_path'] = './assets/temp/';
-        $config['allowed_types'] = 'gif|jpg|png|mp3';
-        //$config['max_size']     = '100';
+        $config['allowed_types'] = 'mp3|mp4';
+        $config['max_size']     = 5242880000000000000;
         //print_r($config);
         $this->load->library('upload', $config);
 
@@ -57,15 +57,6 @@ class main_controller extends CI_Controller {
         foreach ($data as $temp) {
             $this->ftp->download('/mnt/assets/'.$temp['file_name'],'C:/xampp/htdocs/spotify_tcc/assets/'.$temp['file_name'],'auto');
         }
-        
-        //$test = $this->ftp->mirror('C:/xampp/htdocs/spotify_tcc/assets/','/mnt/assets/');
-        // $test = $this->ftp->list_files('/mnt/assets/');
-        
-        // if ($test) {
-        //     echo "fefef";
-        // }else{
-        //     echo 'sad';
-        // }
 
         $this->load->view("admin/view_home",array(
             'data' => $data
@@ -81,16 +72,42 @@ class main_controller extends CI_Controller {
         $dt['title'] = $this->input->post('title');
         $dt['artist'] = $this->input->post('artist');
         $dt['song'] = $this->input->post('song');
-
+        $songName = $_FILES["song"]["name"];
+        
+        //echo $_FILES["song"]["type"]."<== ini typenya <br>";
         if (!$this->upload->do_upload('song')) {
-            $this->upload->display_errors();
+            echo $this->upload->display_errors();
+            var_dump($_FILES);
+            print_r($dt);
         }else{
-            $this->main_model->insertData($dt);
+            // echo 'success <br>';
+            // var_dump($_FILES);
+            $songName = str_replace(" ", "_", $songName);
+            $this->initFtp();
 
+            $goUpload = $this->ftp->upload('C:/xampp/htdocs/spotify_tcc/assets/temp/'.$songName,'/mnt/assets/'.$songName,'auto');
+            if ($goUpload) {
+                $list_data = array(
+                    'title' => $dt['title'],
+                    'artist' => $dt['artist'],
+                    'file_name' => $songName
+                );
+
+                //var_dump($list_data);
+                if($this->main_model->insertData('list_music',$list_data) > 0) {
+                    $data_view = $this->main_model->selectAllData();
+                    $this->load->view("admin/view_home",array(
+                        'data' => $data_view
+                    ));
+                }else{
+                    echo 'gagal insert';
+                }
+            }else{
+                echo 'gagal upload ftp';
+            }
+            $this->ftp->close();
+            unlink('C:/xampp/htdocs/spotify_tcc/assets/temp/'.$songName);
         }
-
-
-
         //print_r(realpath($data["song"]));
         
         //$this->model_mahasiswa->insertData($data);
@@ -117,11 +134,5 @@ class main_controller extends CI_Controller {
 
         // $this->ftp->close();
     }
-    // public function viewTampilData()
-    // {
-    //     $data = $this->main_model->selectAllData();
-    //     $this->load->view("view_home",array(
-    //         'data' => $data
-    //     ));
-    // }
+    
 }

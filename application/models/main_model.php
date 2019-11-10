@@ -10,8 +10,9 @@
         	return $data->result_array();
         }
 
-        public function insertData($data){
-            $this->db->insert('list_music',$data);
+        public function insertData($tableName, $data){
+            $resp = $this->db->insert($tableName,$data);
+            return $resp;
         }
     }
 ?>
