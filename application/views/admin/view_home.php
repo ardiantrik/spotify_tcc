@@ -32,7 +32,7 @@
                                 </tr>
                                 <tr>
                                     <td>Song</td>
-                                    <td><input type="file" name="song" accept=".mp3"></td>
+                                    <td><input type="file" name="song" accept=".mp3,.mp4"></td>
                                 </tr>
                                 <tr>
                                     <td></td>

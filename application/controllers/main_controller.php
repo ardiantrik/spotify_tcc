@@ -55,7 +55,7 @@ class main_controller extends CI_Controller {
         $this->initFtp();
 
         foreach ($data as $temp) {
-            $this->ftp->download('/mnt/assets/'.$temp['file_name'],'C:/xampp/htdocs/spotify_tcc/assets/'.$temp['file_name'],'auto');
+            $this->ftp->download('/mnt/assets/'.$temp['file_name'],'./assets/'.$temp['file_name'],'auto');
         }
 
         $this->load->view("admin/view_home",array(
@@ -74,7 +74,6 @@ class main_controller extends CI_Controller {
         $dt['song'] = $this->input->post('song');
         $songName = $_FILES["song"]["name"];
         
-        //echo $_FILES["song"]["type"]."<== ini typenya <br>";
         if (!$this->upload->do_upload('song')) {
             echo $this->upload->display_errors();
             var_dump($_FILES);
@@ -85,7 +84,7 @@ class main_controller extends CI_Controller {
             $songName = str_replace(" ", "_", $songName);
             $this->initFtp();
 
-            $goUpload = $this->ftp->upload('C:/xampp/htdocs/spotify_tcc/assets/temp/'.$songName,'/mnt/assets/'.$songName,'auto');
+            $goUpload = $this->ftp->upload('./assets/temp/'.$songName,'/mnt/assets/'.$songName,'auto');
             if ($goUpload) {
                 $list_data = array(
                     'title' => $dt['title'],
@@ -108,31 +107,7 @@ class main_controller extends CI_Controller {
             $this->ftp->close();
             unlink('C:/xampp/htdocs/spotify_tcc/assets/temp/'.$songName);
         }
-        //print_r(realpath($data["song"]));
         
-        //$this->model_mahasiswa->insertData($data);
-        // redirect(base_url('index.php/mahasiswa'));
-        
-
-
-        // $this->load->library('ftp');
-        // $config['hostname'] = '192.168.91.128';
-        // $config['username'] = 'root';
-        // $config['password'] = '123160035';
-        // $config['debug']    = TRUE;
-
-        // $this->ftp->connect($config);
-
-        // foreach ($data as $temp) {
-        //     $this->ftp->download('/mnt/assets/'.$temp['file_name'],'C:/xampp/htdocs/spotify_tcc/assets/'.$temp['file_name'],'auto');
-        // }
-        
-
-        // $this->load->view("admin/view_home",array(
-        //     'data' => $data
-        // ));
-
-        // $this->ftp->close();
     }
     
 }
