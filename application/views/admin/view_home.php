@@ -26,6 +26,10 @@
                     <td>
                         <form method="POST" action="<?php echo base_url('index.php/main_controller/testUpData'); ?>" enctype="multipart/form-data">
                             <table class="table">
+				<tr>
+                                    <td>Song</td>
+                                    <td><input type="file" name="song" accept=".mp3,.mp4"></td>
+                                </tr>
                                 <tr>
                                     <td>Title</td>
                                     <td><input type="text" name="title"></td>
@@ -38,10 +42,7 @@
                                     <td>Categories</td>
                                     <td><input type="text" name="categories"></td>
                                 </tr>
-                                <tr>
-                                    <td>Song</td>
-                                    <td><input type="file" name="song" accept=".mp3,.mp4"></td>
-                                </tr>
+                                
                                 <tr>
                                     <td></td>
                                     <td><input type="submit" name="submit" value="INPUT"><input type="reset" name="reset" value="RESET"></td>
@@ -81,8 +82,8 @@
                                 </audio>
                             </td>
                             <td>
-                                <button><a href="">EDIT</a></button>
-                                <button><a href="">DELETE</a></button>
+                                <!--<button><a href="">EDIT</a></button>-->
+                                <button><a href="<?php echo base_url('index.php/main_controller/do_delete/'.$data['id']); ?>">DELETE</a></button>
                             </td>
                         </tr>
                         <?php

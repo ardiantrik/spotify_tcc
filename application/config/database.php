@@ -75,9 +75,9 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => '192.168.91.131',
+	'hostname' => 'localhost',
 	'username' => 'root',
-	'password' => '123160035',
+	'password' => '',
 	'database' => 'music_db',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',

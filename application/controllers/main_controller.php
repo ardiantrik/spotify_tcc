@@ -85,10 +85,12 @@ class main_controller extends CI_Controller {
         $this->initFtp();
 
         $temp_loc = sys_get_temp_dir();
+	// echo $temp_loc.'<br>';
         $temp_loc= str_replace("\\", "/", $temp_loc);
-
+	// echo $temp_loc.'/sdadad<br>';
         foreach ($data as $temp) {
-            $this->ftp->download('/mnt/assets/'.$temp['file_name'],'./assets/'.$temp['file_name'],'auto');
+            //echo $temp['file_name'];
+         $this->ftp->download('/mnt/assets/'.$temp['file_name'],'./assets/'.$temp['file_name'],'auto');
         }
         print_r($this->session->userdata());
         if (isset($this->session->nama)) {
@@ -103,9 +105,9 @@ class main_controller extends CI_Controller {
 
         $this->ftp->close();
 
-        foreach ($data as $temp) {
-            unlink('./assets/'.$temp['file_name']);
-        }
+        //foreach ($data as $temp) {
+            //unlink('/var/www/html/assets/'.$temp['file_name']);
+        //}
         
     }
 
@@ -207,9 +209,25 @@ class main_controller extends CI_Controller {
         // }
     }
 
-    public function do_delete()
+    public function do_delete($id)
     {
-        
+	$data = $this->main_model->cek_delete('list_music',array('id' => $id));
+        $cek = $data->num_rows();
+        if ($cek==1) {
+		$filename = $data->result_array()[0]['file_name'];
+		$this->initFtp();
+        	$res = $this->ftp->delete_file('/mnt/assets/'.$filename);
+
+		if($res){
+			$res = $this->main_model->deleteData('list_music',array('id' => $id));
+			if($res){
+				redirect(base_url("index.php"));
+			}
+		}
+        } else {
+            redirect(base_url("index.php"));
+        }
+
     }
 
     public function testUpData()
@@ -221,7 +239,7 @@ class main_controller extends CI_Controller {
         $dt['categories'] = $this->input->post('categories');
         $dt['song'] = $this->input->post('song');
         $songName = $_FILES["song"]["name"];
-        
+        var_dump($_FILES);
         if (!$this->upload->do_upload('song')) {
             echo $this->upload->display_errors();
             var_dump($_FILES);

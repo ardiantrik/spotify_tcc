@@ -15,8 +15,18 @@
             return $resp;
         }
 
+	public function deleteData($tableName, $data){
+            $resp = $this->db->delete($tableName,$data);
+            return $resp;
+        }
+
         public function cek_login($table, $where) {
             return $this->db->get_where($table,$where);
         }
+
+	public function cek_delete($table, $where) {
+            return $this->db->get_where($table,$where);
+        }
+
     }
 ?>
