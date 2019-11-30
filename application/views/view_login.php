@@ -10,12 +10,13 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 </head>
 
-<body>
+<body style="background: url(<?= base_url("assets/style/backdrop.jpg"); ?>)no-repeat center top;
+    background-size: cover;">
 	<form action="<?php echo base_url('index.php/Main_controller/do_login'); ?> " method="POST">
 	  <div class="container" style="padding-top: 10%;">
 	    <div class="row">
 	      <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-	        <div class="card card-signin my-5">
+	        <div class="card card-signin my-5" style="background-color: rgba(245, 245, 245, 0.7);">
 	          <div class="card-body">
 	            <h5 class="card-title text-center">Sign In</h5>
 	            <form class="form-signin">

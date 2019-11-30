@@ -9,7 +9,7 @@
     <script src="main.js"></script>
     <?php $this->load->view('style'); ?>
 </head>
-<body class="body">
+<body class="body" >
     <div align="right">
         <button><a href="<?= base_url("index.php/main_controller/do_logout"); ?>">LOG OUT</a></button>
     </div>

@@ -43,17 +43,6 @@ class main_controller extends CI_Controller {
         redirect(base_url("index.php"));
     }
 
-    // public function viewInput(){
-    //     $this->load->view('view_input');
-    // }
-
-    // public function inputData(){
-    //     $data['nama'] = $this->input->post('nama');
-    //     $data['nim'] = $this->input->post('nim');
-    //     $this->model_mahasiswa->insertData($data);
-    //     // redirect(base_url('index.php/mahasiswa'));
-    //     $this->index();
-    // }
 
     public function initUpload()
     {
@@ -79,18 +68,63 @@ class main_controller extends CI_Controller {
         $this->ftp->connect($config);
     }
 
+    public function getMusic($url)
+    {
+
+        $ch = curl_init();// persiapkan curl
+        curl_setopt($ch, CURLOPT_URL, $url);// set url 
+        //curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);// return the transfer as a string 
+        //curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+
+        $response = curl_exec($ch);// $output contains the output string 
+        curl_close($ch);// tutup curl 
+
+        //header('Content-Type: application/json');
+        //echo $response;
+        return $response;
+        
+    }
+
+    public function setMusic($data)
+    {
+        
+        # Create a connection
+        $url = 'http://192.168.91.131/api_insert_music.php?';
+        $ch = curl_init();
+        # Form data string
+        $postString = http_build_query($data);
+
+        # Setting our options
+        curl_setopt($ch, CURLOPT_URL, $url.$postString);// set url 
+        
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        # Get the response
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        return $response;
+        
+    }
+
     public function testGetData()
     {
-        $data = $this->main_model->selectAllData();
+        $url = 'http://192.168.91.131/api_read_music.php';
+        //$data = $this->main_model->selectAllData();
+        $data = json_decode($this->getMusic($url), TRUE);
         $this->initFtp();
 
         $temp_loc = sys_get_temp_dir();
 	// echo $temp_loc.'<br>';
         $temp_loc= str_replace("\\", "/", $temp_loc);
 	// echo $temp_loc.'/sdadad<br>';
-        foreach ($data as $temp) {
-            //echo $temp['file_name'];
-         $this->ftp->download('/mnt/assets/'.$temp['file_name'],'./assets/'.$temp['file_name'],'auto');
+        $i = 0;
+
+        while($i < count($data)) {
+            //echo $data[$i]['file_name'];
+          $this->ftp->download('/mnt/assets/'.$data[$i]['file_name'],'./assets/'.$data[$i]['file_name'],'auto');
+         $i++;
         }
         print_r($this->session->userdata());
         if (isset($this->session->nama)) {
@@ -211,23 +245,38 @@ class main_controller extends CI_Controller {
 
     public function do_delete($id)
     {
-	$data = $this->main_model->cek_delete('list_music',array('id' => $id));
-        $cek = $data->num_rows();
+
+	    //$data = $this->main_model->cek_delete('list_music',array('id' => $id));
+        $data = json_decode($this->getMusic("http://192.168.91.131/api_search_music.php?id=".$id), TRUE);
+        
+        //echo $data;
+        $cek = count($data);
+        //$cek = $data->num_rows();
         if ($cek==1) {
-		$filename = $data->result_array()[0]['file_name'];
-		$this->initFtp();
+		    $filename = $data[0]['file_name'];
+            
+    		$this->initFtp();
         	$res = $this->ftp->delete_file('/mnt/assets/'.$filename);
 
-		if($res){
-			$res = $this->main_model->deleteData('list_music',array('id' => $id));
-			if($res){
-				redirect(base_url("index.php"));
-			}
-		}
+    		if($res){
+    			$resp = json_decode($this->getMusic("http://192.168.91.131/api_delete_music.php?id=".$id), TRUE);
+    			if($resp == 'fail'){
+    				echo 'gagal hapus';
+    			}else{
+                    $url = 'http://192.168.91.131/api_read_music.php';
+                    
+                    $data_view = json_decode($this->getMusic($url), TRUE);
+                    $this->load->view("admin/view_home",array(
+                        'data' => $data_view
+                    ));
+                }
+    		}
+            //echo 'here';
         } else {
-            redirect(base_url("index.php"));
+            echo 'hore';
+            //redirect(base_url("index.php"));
         }
-
+        $this->ftp->close();
     }
 
     public function testUpData()
@@ -238,8 +287,10 @@ class main_controller extends CI_Controller {
         $dt['artist'] = $this->input->post('artist');
         $dt['categories'] = $this->input->post('categories');
         $dt['song'] = $this->input->post('song');
+
+        
         $songName = $_FILES["song"]["name"];
-        var_dump($_FILES);
+        //var_dump($_FILES);
         if (!$this->upload->do_upload('song')) {
             echo $this->upload->display_errors();
             var_dump($_FILES);
@@ -260,13 +311,18 @@ class main_controller extends CI_Controller {
                 );
 
                 //var_dump($list_data);
-                if($this->main_model->insertData('list_music',$list_data) > 0) {
-                    $data_view = $this->main_model->selectAllData();
+                $resp = json_decode($this->setMusic($list_data), TRUE);
+                if($resp == "succes") {
+                    //$data_view = $this->main_model->selectAllData();
+                    $url = 'http://192.168.91.131/api_read_music.php';
+                    
+                    $data_view = json_decode($this->getMusic($url), TRUE);
                     $this->load->view("admin/view_home",array(
                         'data' => $data_view
                     ));
+
                 }else{
-                    echo 'gagal insert';
+                    echo 'gagal insert because : '.$resp;
                 }
             }else{
                 echo 'gagal upload ftp';

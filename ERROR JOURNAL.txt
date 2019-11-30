@@ -9,6 +9,11 @@ solusi:
     || (count($analyzed_sql_results['select_expr']) == 1)
         && ($analyzed_sql_results['select_expr'][0] == '*'))
 
+        mula-mula sebelum direplace
+    ((empty($analyzed_sql_results['select_expr']))
+    || (count($analyzed_sql_results['select_expr'] == 1)
+        && ($analyzed_sql_results['select_expr'][0] == '*')))
+
 2. 404 not found pada CI padahal file exist
 solusi:
 	=>nama file controller huruf depan harus kapital!
@@ -17,20 +22,17 @@ solusi:
 solusi:
 	=>sudo chown -R 'USER' 775 /var/www/html/
 	pokoke intine root ngekei full access nang FTP oleh USER
-	ATAU 
-	=> pokoke koe permission set 777 (WARNING! LOW SECURITY LEVEL)
 
 4. Unable to download the specified file. Please check your path.
 solusi:
 	=>cek path pada codingan FTP (baik path remote maupun lokal)
 	ATAU
-	=>cek koneksi ke FTP
+	=>cek koneksi ke FTP (wajib login freenas)
 
 5. No connection could be made because the target machine actively refused it
 solusi:
 	=>sebenere unsolved sih, tp sementara jawabane firewall + DB di grant
 
-6. The uploaded file exceeds the maximum allowed size in your PHP configuration file.
+6. gak bisa auto increment id
 solusi:
-	=>cari file di server/xampp di folder php namane php.ini lalu configurasi masx file size dan upload max size
-	lalu restart service dari apache
+	=> config /etc/mysql/mysql.conf.d/mysqld.cnf tambahin sql_mode=""
