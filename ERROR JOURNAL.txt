@@ -1,0 +1,38 @@
+----------------------------------------------------------------------------
+						ERROR ENCOUNTERED LOG JOURNAL
+----------------------------------------------------------------------------
+1. phpmyadmin terdapat error count() apalah iku 
+solusi:
+	=>config di sudo nano /usr/share/phpmyadmin/libraries/sql.lib.php
+	ada error di parenthesis, replace baris 613 dg 
+	((empty($analyzed_sql_results['select_expr']))
+    || (count($analyzed_sql_results['select_expr']) == 1)
+        && ($analyzed_sql_results['select_expr'][0] == '*'))
+
+        mula-mula sebelum direplace
+    ((empty($analyzed_sql_results['select_expr']))
+    || (count($analyzed_sql_results['select_expr'] == 1)
+        && ($analyzed_sql_results['select_expr'][0] == '*')))
+
+2. 404 not found pada CI padahal file exist
+solusi:
+	=>nama file controller huruf depan harus kapital!
+
+3. /var/www/html/ ubuntu server tidak bia diapa2in
+solusi:
+	=>sudo chown -R 'USER' 775 /var/www/html/
+	pokoke intine root ngekei full access nang FTP oleh USER
+
+4. Unable to download the specified file. Please check your path.
+solusi:
+	=>cek path pada codingan FTP (baik path remote maupun lokal)
+	ATAU
+	=>cek koneksi ke FTP (wajib login freenas)
+
+5. No connection could be made because the target machine actively refused it
+solusi:
+	=>sebenere unsolved sih, tp sementara jawabane firewall + DB di grant
+
+6. gak bisa auto increment id
+solusi:
+	=> config /etc/mysql/mysql.conf.d/mysqld.cnf tambahin sql_mode=""
